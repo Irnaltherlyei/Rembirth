@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'Entry.dart';
+import 'birthday_entry.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,20 +22,20 @@ void main() async {
     version: 1,
   );
 
-  Future<List<Entry>> getAllEntries() async {
+  Future<List<BirthdayEntry>> getAllEntries() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query('birthday_entry');
 
     return List.generate(maps.length, (i) {
-      return Entry(
+      return BirthdayEntry(
         name: maps[i]['name'],
         date: maps[i]['date'],
       );
     });
   }
 
-  Future<void> insertEntry(Entry entry) async {
+  Future<void> insertEntry(BirthdayEntry entry) async {
     final db = await database;
 
     await db.insert(
@@ -45,7 +45,7 @@ void main() async {
     );
   }
 
-  Future<void> deleteEntry(Entry entry) async {
+  Future<void> deleteEntry(BirthdayEntry entry) async {
     final db = await database;
 
     await db.delete(
@@ -55,7 +55,7 @@ void main() async {
     );
   }
 
-  Future<void> updateEntry(Entry entry) async {
+  Future<void> updateEntry(BirthdayEntry entry) async {
     final db = await database;
 
     await db.update(
@@ -69,12 +69,12 @@ void main() async {
   //final db = await database;
   //await db.execute('DROP TABLE birthday_entry');
 
-  var fido = Entry(
+  var fido = BirthdayEntry(
     name: 'Adrian',
     date: DateTime(2000).toString(),
   );
 
-  var fido2 = Entry(
+  var fido2 = BirthdayEntry(
     name: 'Ann-Kathrin',
     date: DateTime(3000).toString(),
   );

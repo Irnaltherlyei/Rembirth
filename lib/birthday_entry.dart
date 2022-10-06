@@ -1,8 +1,8 @@
-class Entry {
+class BirthdayEntry {
   final String name;
   final String date;
 
-  const Entry({required this.name, required this.date});
+  const BirthdayEntry({required this.name, required this.date});
 
   Map<String, dynamic> toMap() {
     return {

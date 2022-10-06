@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'Entry.dart';
+import 'birthday_entry.dart';
 
-class BirthdayEntry extends StatefulWidget {
-  const BirthdayEntry({Key? key, required this.entry, required this.onLongPress}) : super(key: key);
+class WidgetBirthdayEntry extends StatefulWidget {
+  const WidgetBirthdayEntry({Key? key, required this.entry, required this.onLongPress}) : super(key: key);
 
-  final Entry entry;
+  final BirthdayEntry entry;
   final GestureTapCallback onLongPress;
 
   @override
-  State<BirthdayEntry> createState() => _BirthdayEntryState();
+  State<WidgetBirthdayEntry> createState() => _WidgetBirthdayEntryState();
 }
 
-class _BirthdayEntryState extends State<BirthdayEntry> {
+class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
 
   int _daysToBirthday(DateTime birthday){
     DateTime from = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);

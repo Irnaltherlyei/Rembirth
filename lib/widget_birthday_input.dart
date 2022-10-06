@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hello_flutter/Entry.dart';
+import 'package:hello_flutter/birthday_entry.dart';
 
-class BirthdayInput extends StatefulWidget {
-  const BirthdayInput({Key? key, this.entry}) : super(key: key);
+class WidgetBirthdayInput extends StatefulWidget {
+  const WidgetBirthdayInput({Key? key, this.entry}) : super(key: key);
 
-  final Entry? entry;
+  final BirthdayEntry? entry;
 
   @override
-  State<BirthdayInput> createState() => _BirthdayInputState();
+  State<WidgetBirthdayInput> createState() => _WidgetBirthdayInputState();
 }
 
-class _BirthdayInputState extends State<BirthdayInput> {
+class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
 
   DateTime selectedDate = DateTime.now();
   final nameController = TextEditingController();
@@ -58,7 +58,7 @@ class _BirthdayInputState extends State<BirthdayInput> {
             ),
             FloatingActionButton(
               onPressed: () {
-                Navigator.pop(context, Entry(name: nameController.text, date: selectedDate.toString()));
+                Navigator.pop(context, BirthdayEntry(name: nameController.text, date: selectedDate.toString()));
               },
               child: const Icon(Icons.check),
             )
