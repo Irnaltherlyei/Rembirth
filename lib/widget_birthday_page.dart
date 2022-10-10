@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_flutter/persistence.dart';
 import 'package:hello_flutter/widget_birthday_input.dart';
 
 import 'widget_birthday_entry.dart';
@@ -15,6 +16,15 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
   BirthdayEntry? selected;
 
+  late Persistence persistence;
+
+  @override
+  void initState() {
+    persistence = Persistence();
+    persistence.init();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,21 +39,32 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           children: [
             SizedBox(
               height: 500,
-              child: ListView.builder(
-                  itemCount: birthdayEntries.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: WidgetBirthdayEntry(
-                        entry: birthdayEntries[index],
-                        onLongPress: () {
-                          setState(() {
-                            selected = birthdayEntries[index];
-                          });
-                        },
-                      ),
-                    );
-                  }),
+              child: FutureBuilder<List<BirthdayEntry>>(
+                  future: fetchBirthdayEntries(),
+                  builder: (context, future){
+                    if(!future.hasData) {
+                      return Container();
+                    } else {
+                      List<BirthdayEntry>? list = future.data;
+                      return ListView.builder(
+                          itemCount: list!.length,
+                          itemBuilder: (context, index){
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: WidgetBirthdayEntry(
+                                entry: list[index],
+                                onLongPress: () {
+                                  setState(() {
+                                    selected = list[index];
+                                  });
+                                },
+                              ),
+                            );
+                          }
+                      );
+                    }
+                  }
+              ),
             ),
           ],
         ),
@@ -88,6 +109,18 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     );
   }
 
+  Future<List<BirthdayEntry>> fetchBirthdayEntries() async {
+    final entries = await persistence.getAllEntries();
+
+    List<BirthdayEntry> fetchedEntries = entries.map((BirthdayEntry item) => BirthdayEntry(
+        name: item.toMap()['name'],
+        date: item.toMap()['date'],
+      ),
+    ).toList();
+
+    return fetchedEntries;
+  }
+
   Future<void> _addEntry(BuildContext context) async{
     final BirthdayEntry entry = await Navigator.push(
         context,
@@ -110,45 +143,21 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     editBirthdayEntry(selected, entry);
   }
 
-  final List<BirthdayEntry> birthdayEntries = [
-    BirthdayEntry(name: 'Adrian', date: DateTime(2000,8,6).toString()),
-    BirthdayEntry(name: 'Ann-Kathrin', date: DateTime(1999,3,5).toString()),
-  ];
-
-  bool validateBirthdayEntry(BirthdayEntry entry){
-    // Birthday entry can't exist already.
-    if(birthdayEntries.any((element) => element.name == entry.name && DateUtils.isSameDay(element.getDate(), entry.getDate()))){
-      return false;
-    }
-    // Name can't be blank.
-    if(entry.name.isEmpty){
-      return false;
-    }
-    // Name has less than 32 characters.
-    if(entry.name.length > 32){
-      return false;
-    }
-    return true;
-  }
-
   void deleteBirthdayEntry(BirthdayEntry entry){
     setState(() {
-      birthdayEntries.removeWhere((element) => element.name == entry.name && DateUtils.isSameDay(element.getDate(), entry.getDate()));
+      persistence.deleteEntry(entry);
     });
   }
 
   void addBirthdayEntry(BirthdayEntry entry) {
     setState(() {
-      if(validateBirthdayEntry(entry)) {
-        birthdayEntries.add(entry);
-      }
+      persistence.insertEntry(entry);
     });
   }
 
   void editBirthdayEntry(BirthdayEntry selected, BirthdayEntry entry){
     setState(() {
-      int index = birthdayEntries.indexWhere((element) => element.name == selected.name && DateUtils.isSameDay(element.getDate(), selected.getDate()));
-      birthdayEntries[index] = entry;
+      persistence.updateEntry(selected, entry);
     });
   }
 }
