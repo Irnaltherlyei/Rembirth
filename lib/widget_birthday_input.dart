@@ -147,7 +147,7 @@ class _DayPicker extends State<DayPicker> {
             itemCount: DateUtils.getDaysInMonth(widget.year, widget.month) + daysPerWeek + firstDayOffset,
             itemBuilder: (context, index) {
               if(index < daysPerWeek){
-                return Text(weekdays[index]);
+                return Center(child: Text(weekdays[index]));
               } else if(index < daysPerWeek + firstDayOffset) {
                 return const SizedBox.shrink();
               } else {
@@ -155,7 +155,12 @@ class _DayPicker extends State<DayPicker> {
                   onTap: () {
                     Navigator.pop(context, index + 1 - daysPerWeek - firstDayOffset);
                   },
-                  child: Text((index + 1 - daysPerWeek - firstDayOffset).toString()),
+                  child: Card(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                      child: Center(
+                          child: Text((index + 1 - daysPerWeek - firstDayOffset).toString())
+                      )
+                  ),
                 );
               }
             }
@@ -195,14 +200,31 @@ class _MonthPickerState extends State<MonthPicker> {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            ...List.generate(12, (index) =>
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context, index + 1);
-                  },
-                  child: Text(months[index + 1]),
-                )
-            )
+            SizedBox(
+              width: 500,
+              height: 500,
+              child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: 12,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pop(context, index + 1);
+                      },
+                      child: Card(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                        child: SizedBox(
+                            height: 100,
+                            width: 200,
+                            child: Center(child: Text(months[index + 1]))
+                        ),
+                      ),
+                    );
+                  }
+              ),
+            ),
           ],
         ),
       ),
@@ -225,18 +247,32 @@ class _YearPickerState extends State<YearPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: SingleChildScrollView(
-          child: Column(
-            children: [
-              ...List.generate(widget.endYear - widget.initialYear + 1, (index) =>
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context, widget.endYear - index);
-                    },
-                    child: Text((widget.endYear - index).toString()),
-                  )
-              )
-            ],
+          child: SizedBox(
+            width: 700,
+            height: 500,
+            child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                ),
+                itemCount: widget.endYear - widget.initialYear + 1,
+                itemBuilder: (context, index) {
+                    return InkWell(
+                        onTap: () {
+                          Navigator.pop(context, widget.endYear - index);
+                        },
+                        child: Card(
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                          child: SizedBox(
+                              height: 100,
+                              width: 200,
+                              child: Center(child: Text((widget.endYear - index).toString()))
+                          ),
+                        ),
+                      );
+                  }
+            ),
           ),
         ),
     );
