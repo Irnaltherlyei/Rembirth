@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_flutter/persistence.dart';
 import 'package:hello_flutter/widget_birthday_input.dart';
 
+import 'date.dart';
 import 'notifications.dart';
 import 'widget_birthday_entry.dart';
 import 'birthday_entry.dart';
@@ -162,7 +163,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           entry.hashCode,
           "Birthday",
           'Today is ${entry.name}s birthday.',
-          DateTime.now().add(Duration(days: _daysToBirthday(entry.getDate()))));
+          Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
     });
   }
 
@@ -170,11 +171,5 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     setState(() {
       persistence.updateEntry(selected, entry);
     });
-  }
-
-  int _daysToBirthday(DateTime birthday){
-    DateTime from = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime to = DateTime(DateTime.now().year, birthday.month, birthday.day);
-    return to.difference(from).inDays < 0 ? DateTime(DateTime.now().year + 1, birthday.month, birthday.day).difference(from).inDays : to.difference(from).inDays;
   }
 }

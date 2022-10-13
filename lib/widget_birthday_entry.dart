@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'Date.dart';
 import 'birthday_entry.dart';
 
 class WidgetBirthdayEntry extends StatefulWidget {
@@ -14,13 +15,6 @@ class WidgetBirthdayEntry extends StatefulWidget {
 }
 
 class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
-
-  int _daysToBirthday(DateTime birthday){
-    DateTime from = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime to = DateTime(DateTime.now().year, birthday.month, birthday.day);
-    return to.difference(from).inDays < 0 ? DateTime(DateTime.now().year + 1, birthday.month, birthday.day).difference(from).inDays : to.difference(from).inDays;
-  }
-
   final Map weekdays = {
     1: 'monday',
     2: 'tuesday',
@@ -41,14 +35,14 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(widget.entry.name),
-              Text('Next birthday in ${_daysToBirthday(widget.entry.getDate())} days.')
+              Text('Next birthday in ${Date.daysToBirthday(widget.entry.getDate())} days.')
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(DateFormat('dd. MMMM yyyy').format(widget.entry.getDate())),
-              Text('on ${weekdays[DateTime.now().add(Duration(days: _daysToBirthday(widget.entry.getDate()))).weekday]}'),
+              Text('on ${weekdays[Date.now().add(Duration(days: Date.daysToBirthday(widget.entry.getDate()))).weekday]}'),
             ],
           )
         ],

@@ -1,17 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+
+
+import 'Date.dart';
 
 class Notifications{
   late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   Future<void> initNotifications() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    tz.initializeTimeZones();
-    // TODO: Dynamic timezone location
-    tz.setLocalLocation(await TimeZoneLocation.getTimeZoneLocation());
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@drawable/ic_stat_ac_unit');
     const LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification');
@@ -24,7 +20,7 @@ class Notifications{
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,);
   }
 
-  Future<NotificationDetails> _notificationDetails() async {
+  Future<NotificationDetails> notificationDetails() async {
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails('channel_id', 'channel_name',
         channelDescription: 'channel_description',
@@ -38,40 +34,28 @@ class Notifications{
   }
 
   void showNotification() async{
-    NotificationDetails notificationDetails = await _notificationDetails();
+    NotificationDetails details = await notificationDetails();
 
-    await flutterLocalNotificationsPlugin.show(
+    flutterLocalNotificationsPlugin.show(
       0,
       'plain title',
       'plain body',
-      notificationDetails,
+      details,
       payload: 'item x',
     );
   }
 
   void scheduleNotification(int id, String title, String body, DateTime schedule) async{
-    NotificationDetails notificationDetails = await _notificationDetails();
+    NotificationDetails details = await notificationDetails();
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
-      await convertDateTime(schedule),
-      notificationDetails,
+      await Date.convertDateTime(schedule),
+      details,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
-  }
-
-  Future<tz.TZDateTime> convertDateTime(DateTime date) async{
-    return tz.TZDateTime.from(date, await TimeZoneLocation.getTimeZoneLocation());
-  }
-}
-
-class TimeZoneLocation {
-  static Future<tz.Location> getTimeZoneLocation() async {
-    String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-
-    return tz.getLocation(timeZoneName);
   }
 }

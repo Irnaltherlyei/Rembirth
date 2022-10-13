@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_flutter/Date.dart';
 import 'package:hello_flutter/birthday_entry.dart';
 
 class WidgetBirthdayInput extends StatefulWidget {
@@ -12,7 +13,7 @@ class WidgetBirthdayInput extends StatefulWidget {
 
 class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = Date.now();
   final nameController = TextEditingController();
 
   @override
@@ -99,7 +100,7 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
   Future<void> _getYear(BuildContext context) async{
     final int result = await Navigator.push(
       context,
-      DialogRoute(builder: (context) => YearPicker(initialYear: 1900, endYear: DateTime.now().year), context: context),
+      DialogRoute(builder: (context) => YearPicker(initialYear: 1900, endYear: Date.now().year), context: context),
     );
 
     if(!mounted) return;
