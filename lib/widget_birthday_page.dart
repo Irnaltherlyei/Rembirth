@@ -170,6 +170,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   void editBirthdayEntry(BirthdayEntry selected, BirthdayEntry entry){
     setState(() {
       persistence.updateEntry(selected, entry);
+      notifications.deleteScheduledNotification(entry.hashCode);
     });
   }
 }

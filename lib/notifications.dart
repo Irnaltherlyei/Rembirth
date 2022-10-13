@@ -58,4 +58,8 @@ class Notifications{
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
+
+  void deleteScheduledNotification(int id) {
+    flutterLocalNotificationsPlugin.cancel(id);
+  }
 }

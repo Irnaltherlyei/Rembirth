@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'widget_birthday_page.dart';
 
-void main()async {
+void main() {
   runApp(const MyApp());
 }
 
