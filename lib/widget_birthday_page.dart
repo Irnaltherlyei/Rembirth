@@ -44,8 +44,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
         },
         child: Column(
           children: [
-            SizedBox(
-              height: 500,
+            Expanded(
               child: FutureBuilder<List<BirthdayEntry>>(
                   future: fetchBirthdayEntries(),
                   builder: (context, future){
@@ -57,16 +56,13 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                       return ListView.builder(
                           itemCount: list!.length,
                           itemBuilder: (context, index){
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: WidgetBirthdayEntry(
+                            return WidgetBirthdayEntry(
                                 entry: list[index],
                                 onLongPress: () {
                                   setState(() {
                                     selected = list[index];
                                   });
                                 },
-                              ),
                             );
                           }
                       );
@@ -77,41 +73,46 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SingleChildScrollView(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            selected != null ? FloatingActionButton(
-              onPressed: () {
-                _editEntry(context, selected!);
-              },
-              tooltip: 'Edit',
-              child: const Icon(Icons.edit),
-            ) : Container(),
-            selected != null ? FloatingActionButton(
-              onPressed: () {
-                deleteBirthdayEntry(selected!);
-                selected = null;
-              },
-              tooltip: 'Delete',
-              child: const Icon(Icons.delete),
-            ) : Container(),
-            selected == null ? FloatingActionButton(
-              onPressed: () {
-                _addEntry(context);
-              },
-              tooltip: 'Add',
-              child: const Icon(Icons.add),
-            ) :  FloatingActionButton(
-              onPressed: () {
-                setState(() {
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Row(
+            children: [
+              selected != null ? FloatingActionButton(
+                onPressed: () {
+                  _editEntry(context, selected!);
+                },
+                tooltip: 'Edit',
+                child: const Icon(Icons.edit),
+              ) : Container(),
+              Expanded(child: Container()),
+              selected != null ? FloatingActionButton(
+                onPressed: () {
+                  deleteBirthdayEntry(selected!);
                   selected = null;
-                });
-              },
-              tooltip: 'Cancel',
-              child: const Icon(Icons.cancel),
-            ),
-          ],
+                },
+                tooltip: 'Delete',
+                child: const Icon(Icons.delete),
+              ) : Container(),
+              Expanded(child: Container()),
+              selected == null ? FloatingActionButton(
+                onPressed: () {
+                  _addEntry(context);
+                },
+                tooltip: 'Add',
+                child: const Icon(Icons.add),
+              ) :  FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    selected = null;
+                  });
+                },
+                tooltip: 'Cancel',
+                child: const Icon(Icons.cancel),
+              ),
+            ],
+          ),
         ),
       ),
     );
