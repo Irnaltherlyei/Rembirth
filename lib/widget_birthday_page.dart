@@ -53,6 +53,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                       return Container();
                     } else {
                       List<BirthdayEntry>? list = future.data;
+                      list?.sort((a, b) => Date.daysToBirthday(a.getDate()).compareTo(Date.daysToBirthday(b.getDate())));
                       return ListView.builder(
                           itemCount: list!.length,
                           itemBuilder: (context, index){
