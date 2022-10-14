@@ -138,6 +138,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
     if(!mounted) return;
 
+    if(entry is! BirthdayEntry) return;
+
     addBirthdayEntry(entry);
   }
 
@@ -148,6 +150,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     );
 
     if(!mounted) return;
+
+    if(entry is! BirthdayEntry) return;
 
     editBirthdayEntry(selected, entry);
   }
