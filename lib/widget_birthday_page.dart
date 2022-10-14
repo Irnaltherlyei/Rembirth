@@ -130,7 +130,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   }
 
   Future<void> _addEntry(BuildContext context) async{
-    final BirthdayEntry entry = await Navigator.push(
+    final entry = await Navigator.push(
         context,
         DialogRoute(builder: (context) => const WidgetBirthdayInput(), context: context),
     );
@@ -141,7 +141,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   }
 
   Future<void> _editEntry(BuildContext context, BirthdayEntry selected) async{
-    final BirthdayEntry entry = await Navigator.push(
+    final entry = await Navigator.push(
       context,
       DialogRoute(builder: (context) => WidgetBirthdayInput(entry: selected), context: context),
     );
