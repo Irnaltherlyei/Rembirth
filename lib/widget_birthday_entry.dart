@@ -29,23 +29,29 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: widget.onLongPress,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Card(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
             children: [
-              Text(widget.entry.name),
-              Text('Next birthday in ${Date.daysToBirthday(widget.entry.getDate())} days.')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.entry.name),
+                  Text('Next birthday in ${Date.daysToBirthday(widget.entry.getDate())} days.')
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(DateFormat('dd. MMMM yyyy').format(widget.entry.getDate())),
+                  Text('on ${weekdays[Date.now().add(Duration(days: Date.daysToBirthday(widget.entry.getDate()))).weekday]}'),
+                ],
+              )
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(DateFormat('dd. MMMM yyyy').format(widget.entry.getDate())),
-              Text('on ${weekdays[Date.now().add(Duration(days: Date.daysToBirthday(widget.entry.getDate()))).weekday]}'),
-            ],
-          )
-        ],
+        ),
       ),
     );
   }
