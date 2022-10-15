@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_flutter/persistence.dart';
 import 'package:hello_flutter/widget_birthday_input.dart';
 
@@ -52,9 +53,11 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                       return Container();
                     } else {
                       List<BirthdayEntry>? list = future.data;
-                      list?.sort((a, b) => Date.daysToBirthday(a.getDate()).compareTo(Date.daysToBirthday(b.getDate())));
+                      // TODO: Move this to initialization
+                      updateNotifications(list!);
+                      list.sort((a, b) => Date.daysToBirthday(a.getDate()).compareTo(Date.daysToBirthday(b.getDate())));
                       return ListView.builder(
-                          itemCount: list!.length,
+                          itemCount: list.length,
                           itemBuilder: (context, index){
                             return WidgetBirthdayEntry(
                                 entry: list[index],
@@ -118,6 +121,23 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     );
   }
 
+  void updateNotifications(List<BirthdayEntry> entries) async{
+    List<PendingNotificationRequest> pendingNotificationRequests = await notifications.flutterLocalNotificationsPlugin.pendingNotificationRequests();
+
+    for(BirthdayEntry entry in entries){
+      if(pendingNotificationRequests.any((notification) => notification.id == entry.hashCode)){
+        // Do nothing
+      } else {
+        // Schedule notification
+        notifications.scheduleNotification(
+          entry.hashCode,
+          "Birthday",
+          'Today is ${entry.name}\'s birthday.',
+          Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
+      }
+    }
+  }
+
   Future<List<BirthdayEntry>> fetchBirthdayEntries() async {
     final entries = await persistence.getAllEntries();
 
@@ -157,8 +177,6 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   }
 
   bool validateBirthdayEntry(BirthdayEntry entry){
-    // TODO: Birthday entry can't exist already.
-
     // Name can't be blank.
     if(entry.name.isEmpty){
       return false;
@@ -173,6 +191,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   void deleteBirthdayEntry(BirthdayEntry entry){
     setState(() {
       persistence.deleteEntry(entry);
+      notifications.deleteScheduledNotification(entry.hashCode);
     });
   }
 
@@ -194,7 +213,6 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
     setState(() {
       persistence.updateEntry(selected, entry);
-      notifications.deleteScheduledNotification(entry.hashCode);
     });
   }
 }

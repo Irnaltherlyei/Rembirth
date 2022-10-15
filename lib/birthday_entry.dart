@@ -19,4 +19,15 @@ class BirthdayEntry {
   DateTime getDate() {
     return DateTime.parse(date);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BirthdayEntry &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          date == other.date;
+
+  @override
+  int get hashCode => name.hashCode ^ date.hashCode;
 }
