@@ -156,6 +156,20 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     editBirthdayEntry(selected, entry);
   }
 
+  bool validateBirthdayEntry(BirthdayEntry entry){
+    // TODO: Birthday entry can't exist already.
+
+    // Name can't be blank.
+    if(entry.name.isEmpty){
+      return false;
+    }
+    // Name has less than 32 characters.
+    if(entry.name.length > 32){
+      return false;
+    }
+    return true;
+  }
+
   void deleteBirthdayEntry(BirthdayEntry entry){
     setState(() {
       persistence.deleteEntry(entry);
@@ -163,6 +177,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   }
 
   void addBirthdayEntry(BirthdayEntry entry) {
+    if(!validateBirthdayEntry(entry)) return;
+
     setState(() {
       persistence.insertEntry(entry);
       notifications.scheduleNotification(
@@ -174,6 +190,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   }
 
   void editBirthdayEntry(BirthdayEntry selected, BirthdayEntry entry){
+    if(!validateBirthdayEntry(entry)) return;
+
     setState(() {
       persistence.updateEntry(selected, entry);
       notifications.deleteScheduledNotification(entry.hashCode);
