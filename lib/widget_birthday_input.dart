@@ -26,44 +26,60 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Form(
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                hintText: 'Enter a name',
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      content: Padding(
+        padding: const EdgeInsets.only(top: 32.0),
+        child: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Enter a name',
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  child: Text('${"${selectedDate.toLocal()}".split('-')[0]}-'),
-                  onTap: () => _getYear(context),
-                ),
-                InkWell(
-                  child: Text('${"${selectedDate.toLocal()}".split('-')[1]}-'),
-                  onTap: () => _getMonth(context),
-                ),
-                InkWell(
-                  child: Text("${selectedDate.toLocal()}".split('-')[2].split(' ')[0]),
-                  onTap: () => _getDay(context, selectedDate),
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () => _getYear(context),
-              child: const Text('Select birthday'),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                Navigator.pop(context, BirthdayEntry(name: nameController.text, date: selectedDate.toString()));
-              },
-              child: const Icon(Icons.check),
-            )
-          ],
+              const SizedBox(height: 32),
+              const Text('Birthdate', style: TextStyle(color: Color.fromARGB(160, 30, 30, 30)),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    child: Text('${"${selectedDate.toLocal()}".split('-')[0]}-'),
+                    onTap: () => _getYear(context),
+                  ),
+                  InkWell(
+                    child: Text('${"${selectedDate.toLocal()}".split('-')[1]}-'),
+                    onTap: () => _getMonth(context),
+                  ),
+                  InkWell(
+                    child: Text("${selectedDate.toLocal()}".split('-')[2].split(' ')[0]),
+                    onTap: () => _getDay(context, selectedDate),
+                  ),
+                ],
+              ),
+              const Divider(height: 20, thickness: 2,),
+              ElevatedButton(
+                onPressed: () => _getYear(context),
+                child: const Text('Select birthday'),
+              ),
+              const SizedBox(height: 48),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      Navigator.pop(context, BirthdayEntry(name: nameController.text, date: selectedDate.toString()));
+                    },
+                    child: const Icon(Icons.check),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -138,33 +154,37 @@ class _DayPicker extends State<DayPicker> {
     }
 
     return AlertDialog(
-      content: SizedBox(
-        width: 700,
-        height: 500,
-        child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: daysPerWeek,
-            ),
-            itemCount: DateUtils.getDaysInMonth(widget.year, widget.month) + daysPerWeek + firstDayOffset,
-            itemBuilder: (context, index) {
-              if(index < daysPerWeek){
-                return Center(child: Text(weekdays[index]));
-              } else if(index < daysPerWeek + firstDayOffset) {
-                return const SizedBox.shrink();
-              } else {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pop(context, index + 1 - daysPerWeek - firstDayOffset);
-                  },
-                  child: Card(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                      child: Center(
-                          child: Text((index + 1 - daysPerWeek - firstDayOffset).toString())
-                      )
-                  ),
-                );
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      content: Padding(
+        padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+        child: SizedBox(
+          width: double.maxFinite,
+          child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: daysPerWeek,
+              ),
+              itemCount: DateUtils.getDaysInMonth(widget.year, widget.month) + daysPerWeek + firstDayOffset,
+              itemBuilder: (context, index) {
+                if(index < daysPerWeek){
+                  return Center(child: Text(weekdays[index]));
+                } else if(index < daysPerWeek + firstDayOffset) {
+                  return const SizedBox.shrink();
+                } else {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.pop(context, index + 1 - daysPerWeek - firstDayOffset);
+                    },
+                    child: Card(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                        child: Center(
+                            child: Text((index + 1 - daysPerWeek - firstDayOffset).toString())
+                        )
+                    ),
+                  );
+                }
               }
-            }
+          ),
         ),
       ),
     );
@@ -198,35 +218,29 @@ class _MonthPickerState extends State<MonthPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              width: 500,
-              height: 500,
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: 12,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pop(context, index + 1);
-                      },
-                      child: Card(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                        child: SizedBox(
-                            height: 100,
-                            width: 200,
-                            child: Center(child: Text(months[index + 1]))
-                        ),
-                      ),
-                    );
-                  }
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      content: Padding(
+        padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+        child: SizedBox(
+          width: double.maxFinite,
+          child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
               ),
-            ),
-          ],
+              itemCount: 12,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(context, index + 1);
+                  },
+                  child: Card(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Center(child: Text(months[index + 1])),
+                  ),
+                );
+              }
+          ),
         ),
       ),
     );
@@ -251,7 +265,7 @@ class _YearPickerState extends State<YearPicker> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: SingleChildScrollView(
           child: SizedBox(
-            width: 700,
+            width: double.maxFinite,
             height: 500,
             child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
