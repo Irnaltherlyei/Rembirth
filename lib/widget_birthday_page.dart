@@ -17,7 +17,8 @@ class WidgetBirthdayPage extends StatefulWidget {
 
 class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
-  BirthdayEntry? selected;
+  BirthdayEntry? recentSelected;
+  List<BirthdayEntry> selected = [];
 
   late Persistence persistence;
   late Notifications notifications;
@@ -38,9 +39,10 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTapDown: (TapDownDetails details){
+        onTap: () {
           setState((){
-            selected = null;
+            recentSelected = null;
+            selected.clear();
           });
         },
         child: Column(
@@ -59,13 +61,29 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                       return ListView.builder(
                           itemCount: list.length,
                           itemBuilder: (context, index){
-                            return WidgetBirthdayEntry(
-                                entry: list[index],
-                                onLongPress: () {
-                                  setState(() {
-                                    selected = list[index];
-                                  });
-                                },
+
+                            // Selected entries get indented.
+                            double p = 0.0;
+                            if(selected.contains(list[index])){
+                              p = 32.0;
+                            }
+
+                            return Padding(
+                              padding: EdgeInsets.only(left: p),
+                              child: WidgetBirthdayEntry(
+                                  entry: list[index],
+                                  onLongPress: () {
+                                    setState(() {
+                                      recentSelected = list[index];
+                                      if(selected.contains(list[index])){
+                                        selected.remove(list[index]);
+                                        recentSelected = selected.isNotEmpty ? selected.last : null;
+                                      } else {
+                                        selected.add(list[index]);
+                                      }
+                                    });
+                                  },
+                              ),
                             );
                           }
                       );
@@ -82,24 +100,31 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
           child: Row(
             children: [
-              selected != null ? FloatingActionButton(
+              recentSelected != null ? FloatingActionButton(
                 onPressed: () {
-                  _editEntry(context, selected!);
+                  _editEntry(context, recentSelected!);
                 },
                 tooltip: 'Edit',
                 child: const Icon(Icons.edit),
               ) : Container(),
               Expanded(child: Container()),
-              selected != null ? FloatingActionButton(
+              recentSelected != null ? FloatingActionButton(
                 onPressed: () {
-                  deleteBirthdayEntry(selected!);
-                  selected = null;
+                  if(selected.isEmpty){
+                    deleteBirthdayEntry(recentSelected!);
+                  } else {
+                    for (BirthdayEntry entry in selected) {
+                      deleteBirthdayEntry(entry);
+                    }
+                    selected.clear();
+                  }
+                  recentSelected = null;
                 },
                 tooltip: 'Delete',
                 child: const Icon(Icons.delete),
               ) : Container(),
               Expanded(child: Container()),
-              selected == null ? FloatingActionButton(
+              recentSelected == null ? FloatingActionButton(
                 onPressed: () {
                   _addEntry(context);
                 },
@@ -108,7 +133,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
               ) :  FloatingActionButton(
                 onPressed: () {
                   setState(() {
-                    selected = null;
+                    recentSelected = null;
+                    selected.clear();
                   });
                 },
                 tooltip: 'Cancel',
@@ -163,17 +189,17 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     addBirthdayEntry(entry);
   }
 
-  Future<void> _editEntry(BuildContext context, BirthdayEntry selected) async{
+  Future<void> _editEntry(BuildContext context, BirthdayEntry recentSelected) async{
     final entry = await Navigator.push(
       context,
-      DialogRoute(builder: (context) => WidgetBirthdayInput(entry: selected), context: context),
+      DialogRoute(builder: (context) => WidgetBirthdayInput(entry: recentSelected), context: context),
     );
 
     if(!mounted) return;
 
     if(entry is! BirthdayEntry) return;
 
-    editBirthdayEntry(selected, entry);
+    editBirthdayEntry(recentSelected, entry);
   }
 
   bool validateBirthdayEntry(BirthdayEntry entry){
@@ -208,11 +234,11 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     });
   }
 
-  void editBirthdayEntry(BirthdayEntry selected, BirthdayEntry entry){
+  void editBirthdayEntry(BirthdayEntry recentSelected, BirthdayEntry entry){
     if(!validateBirthdayEntry(entry)) return;
 
     setState(() {
-      persistence.updateEntry(selected, entry);
+      persistence.updateEntry(recentSelected, entry);
     });
   }
 }
