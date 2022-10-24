@@ -27,6 +27,9 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
 
   @override
   Widget build(BuildContext context) {
+    int daysToBirthday = Date.daysToBirthday(widget.entry.getDate());
+    String weekday = weekdays[Date.now().add(Duration(days: daysToBirthday)).weekday];
+
     return GestureDetector(
       onLongPress: widget.onLongPress,
       child: Card(
@@ -39,14 +42,14 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(widget.entry.name),
-                  Text('Next birthday in ${Date.daysToBirthday(widget.entry.getDate())} days.')
+                  daysToBirthday == 365 ? Text('Today is ${widget.entry.name}\'s birthday.') : Text('Next birthday in $daysToBirthday days.')
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(DateFormat('dd. MMMM yyyy').format(widget.entry.getDate())),
-                  Text('on ${weekdays[Date.now().add(Duration(days: Date.daysToBirthday(widget.entry.getDate()))).weekday]}'),
+                  daysToBirthday == 365 ? const Text('') : Text('on $weekday')
                 ],
               )
             ],
