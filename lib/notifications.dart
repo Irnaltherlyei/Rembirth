@@ -9,7 +9,7 @@ class Notifications{
   Future<void> initNotifications() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@drawable/ic_stat_ac_unit');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
     const LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification');
 
     const InitializationSettings initializationSettings = InitializationSettings(
