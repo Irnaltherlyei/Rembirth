@@ -74,14 +74,29 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                                   entry: list[index],
                                   onLongPress: () {
                                     setState(() {
-                                      recentSelected = list[index];
-                                      if(selected.contains(list[index])){
-                                        selected.remove(list[index]);
-                                        recentSelected = selected.isNotEmpty ? selected.last : null;
-                                      } else {
-                                        selected.add(list[index]);
+                                      if(recentSelected == null){
+                                        recentSelected = birthdayEntries[index];
+                                        if(selected.contains(birthdayEntries[index])){
+                                          selected.remove(birthdayEntries[index]);
+                                          recentSelected = selected.isNotEmpty ? selected.last : null;
+                                        } else {
+                                          selected.add(birthdayEntries[index]);
+                                        }
                                       }
                                     });
+                                  },
+                                  onTap: () {
+                                    if(recentSelected != null){
+                                      setState(() {
+                                        recentSelected = birthdayEntries[index];
+                                        if(selected.contains(birthdayEntries[index])){
+                                          selected.remove(birthdayEntries[index]);
+                                          recentSelected = selected.isNotEmpty ? selected.last : null;
+                                        } else {
+                                          selected.add(birthdayEntries[index]);
+                                        }
+                                      });
+                                    }
                                   },
                               ),
                             );

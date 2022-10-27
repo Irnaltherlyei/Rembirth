@@ -5,10 +5,11 @@ import 'Date.dart';
 import 'birthday_entry.dart';
 
 class WidgetBirthdayEntry extends StatefulWidget {
-  const WidgetBirthdayEntry({Key? key, required this.entry, required this.onLongPress}) : super(key: key);
+  const WidgetBirthdayEntry({Key? key, required this.entry, required this.onLongPress, required this.onTap}) : super(key: key);
 
   final BirthdayEntry entry;
   final GestureTapCallback onLongPress;
+  final GestureTapCallback onTap;
 
   @override
   State<WidgetBirthdayEntry> createState() => _WidgetBirthdayEntryState();
@@ -32,6 +33,7 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
 
     return GestureDetector(
       onLongPress: widget.onLongPress,
+      onTap: widget.onTap,
       child: Card(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
         child: Padding(
