@@ -1,65 +1,76 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:rxdart/rxdart.dart';
 
 import 'Date.dart';
 
 class Notifications{
-  late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  Notifications();
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
   Future<void> initNotifications() async {
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
-    const LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification');
 
     const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      linux: initializationSettingsLinux,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
   }
 
   Future<NotificationDetails> notificationDetails() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('channel_id', 'channel_name',
+    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+        'channel_id',
+        'channel_name',
         channelDescription: 'channel_description',
         importance: Importance.max,
         priority: Priority.max,
-        playSound: true);
+        playSound: true
+    );
 
     return const NotificationDetails(
       android: androidNotificationDetails,
     );
   }
 
-  void showNotification() async{
-    NotificationDetails details = await notificationDetails();
-
+  void showNotification(int id, String title, String body, String payload) async{
     flutterLocalNotificationsPlugin.show(
-      0,
-      'plain title',
-      'plain body',
-      details,
-      payload: 'item x',
+      id,
+      title,
+      body,
+      await notificationDetails(),
+      payload: payload,
     );
   }
 
-  void scheduleNotification(int id, String title, String body, DateTime schedule) async{
-    NotificationDetails details = await notificationDetails();
-
+  void scheduleNotification(int id, String title, String body, DateTime schedule, String payload) async{
     flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
       await Date.convertDateTime(schedule),
-      details,
+      await notificationDetails(),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      payload: payload
     );
   }
 
   void deleteScheduledNotification(int id) {
     flutterLocalNotificationsPlugin.cancel(id);
+  }
+
+  void onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {
+    final String? payload = notificationResponse.payload;
+
+    if (notificationResponse.payload != null) {
+      onNotificationClick.add(payload);
+    }
   }
 }
