@@ -5,12 +5,11 @@ import 'package:path_provider/path_provider.dart';
 class Debug {
   /// Manually set debugging parameters.
   static bool debugMode = true;
-  static bool writeLogs = false;
   static String filePath = '';
   static String fileName = 'debug.txt';
 
   /// Printing log message.
-  static void log(Object logMessage){
+  static void log(Object logMessage, [bool writeLogs = false]){
       if(!debugMode){
         return;
       }
