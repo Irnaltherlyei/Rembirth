@@ -189,16 +189,19 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
     for(BirthdayEntry entry in entries){
       if(pendingNotificationRequests.any((notification) => notification.id == entry.hashCode)){
-        // Do nothing
+        /// Do nothing
       } else {
-        // Schedule notification
+        /// Schedule notification
+
+        /// TODO: Disable following line on production release.
+        DateTime scheduledTime = Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate())));
+        scheduledTime = DateTime.now().add(const Duration(hours: 0, seconds: 5));
+
         notifications.scheduleNotification(
           entry.hashCode,
           "Birthday",
-          'Today is ${entry.name}\'s birthday.',
-          /// TODO: Disable following line on production release.
-          //Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))),
-          Date.now().add(const Duration(seconds: 5)),
+          'Today is ${entry.name}s birthday.',
+          scheduledTime,
           entry.name
         );
       }
@@ -271,7 +274,9 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   void addBirthdayEntry(BirthdayEntry entry) {
     if(!validateBirthdayEntry(entry)) return;
 
-    //print(DateTime.now().add(const Duration(hours: 0, seconds: 2)));
+    /// TODO: Disable following line on production release.
+    DateTime scheduledTime = Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate())));
+    scheduledTime = DateTime.now().add(const Duration(hours: 0, seconds: 5));
 
     setState(() {
       persistence.insertEntry(entry);
@@ -279,9 +284,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           entry.hashCode,
           "Birthday",
           'Today is ${entry.name}s birthday.',
-          /// TODO: Disable following line on production release.
-          //Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
-          DateTime.now().add(const Duration(hours: 0, seconds: 2)),
+          scheduledTime,
           entry.hashCode.toString()
       );
     });
