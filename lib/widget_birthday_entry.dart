@@ -4,10 +4,15 @@ import 'package:intl/intl.dart';
 import 'Date.dart';
 import 'birthday_entry.dart';
 
+/// Single element representing a birthday entry. Are placed in a list to be displayed on the main page.
+/// Is a widget.
 class WidgetBirthdayEntry extends StatefulWidget {
   const WidgetBirthdayEntry({Key? key, required this.entry, required this.onLongPress, required this.onTap}) : super(key: key);
 
+  /// Birthday entry data
   final BirthdayEntry entry;
+
+  /// Gesture calls.
   final GestureTapCallback onLongPress;
   final GestureTapCallback onTap;
 
@@ -16,6 +21,8 @@ class WidgetBirthdayEntry extends StatefulWidget {
 }
 
 class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
+  /// Mapping numbers to weekdays used to display weekdays as strings.
+  /// Needed because DateTime .weekday returns a number.
   final Map weekdays = {
     1: 'monday',
     2: 'tuesday',
@@ -28,9 +35,12 @@ class _WidgetBirthdayEntryState extends State<WidgetBirthdayEntry> {
 
   @override
   Widget build(BuildContext context) {
+    /// Calculating days to birthday to be displayed.
     int daysToBirthday = Date.daysToBirthday(widget.entry.getDate());
+    /// Calculating weekday the birthday falls on to be displayed on screen.
     String weekday = weekdays[Date.now().add(Duration(days: daysToBirthday)).weekday];
 
+    /// Design
     return GestureDetector(
       onLongPress: widget.onLongPress,
       onTap: widget.onTap,

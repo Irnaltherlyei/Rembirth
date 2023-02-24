@@ -4,9 +4,11 @@ import 'package:sqflite/sqflite.dart';
 
 import 'birthday_entry.dart';
 
+/// Persistence manager. Enabling to save birthday entries permanently.
 class Persistence{
   late final Future<Database> database;
 
+  /// Initializing database.
   void init() async{
     WidgetsFlutterBinding.ensureInitialized();
     database = openDatabase(
@@ -25,6 +27,7 @@ class Persistence{
     );
   }
 
+  /// Custom call to retrieve all birthday entries.
   Future<List<BirthdayEntry>> getAllEntries() async {
     final db = await database;
 
@@ -38,6 +41,7 @@ class Persistence{
     });
   }
 
+  /// Insert birthday entry.
   Future<void> insertEntry(BirthdayEntry entry) async {
     final db = await database;
 
@@ -48,6 +52,7 @@ class Persistence{
     );
   }
 
+  /// Delete birthday entry.
   Future<void> deleteEntry(BirthdayEntry entry) async {
     final db = await database;
 
@@ -58,6 +63,7 @@ class Persistence{
     );
   }
 
+  /// Update birthday entry.
   Future<void> updateEntry(BirthdayEntry oldEntry, BirthdayEntry newEntry) async {
     final db = await database;
 
@@ -69,6 +75,7 @@ class Persistence{
     );
   }
 
+  /// Filling the database with sample data.
   Future<void> sampleData() async{
     var data = BirthdayEntry(name: 'Adrian', date: DateTime(2000,8,6).toString());
     await insertEntry(data);

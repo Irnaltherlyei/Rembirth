@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'birthday_entry.dart';
 
+/// Testing class for managing persistence.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final database = openDatabase(

@@ -8,6 +8,14 @@ import 'notifications.dart';
 import 'widget_birthday_entry.dart';
 import 'birthday_entry.dart';
 
+/// Widget displaying the main page of the App
+/// Showing a list of birthday entries
+
+/// Functionality:
+///       Persistence and the loaded database birthday entry list work independent.
+///       On start the birthday entry list is fetched from the database which is held in memory throughout the app usage until closed.
+///       When adding, editing, deleting entries they get modified in the birthday entry list, updated in the database separately, also notifications get scheduled.
+///       On every action scheduled notifications get checked and scheduled when not existing for any birthday entry.
 class WidgetBirthdayPage extends StatefulWidget {
   const WidgetBirthdayPage({Key? key}) : super(key: key);
 
@@ -17,7 +25,9 @@ class WidgetBirthdayPage extends StatefulWidget {
 
 class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
+  /// Recent selected birthday entry
   BirthdayEntry? recentSelected;
+  /// List of currently selected birthday entries
   List<BirthdayEntry> selected = [];
 
   late Persistence persistence;
@@ -25,17 +35,26 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
 
   @override
   void initState() {
+    /// Initializing persistence manager
     persistence = Persistence();
     persistence.init();
 
+    /// Initializing notification manager
     notifications = Notifications();
     notifications.initNotifications();
+
+    /// Listening to notification events. E.g. OnClick.
+    listenToNotifications();
 
     super.initState();
   }
 
+  /// List holding all birthday entries during runtime for faster access
+  List<BirthdayEntry> birthdayEntries = [];
+
   @override
   Widget build(BuildContext context) {
+    /// Design
     return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -162,6 +181,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     );
   }
 
+  /// Iterates through all birthday entries and checks whether an existing notification is scheduled.
+  /// If not existing rescheduled a new notification for the specific birthday entry
   void updateNotifications(List<BirthdayEntry> entries) async{
     List<PendingNotificationRequest> pendingNotificationRequests = await notifications.flutterLocalNotificationsPlugin.pendingNotificationRequests();
 
@@ -179,6 +200,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     }
   }
 
+  /// Accesses database to fetch all saved birthday entries and parsing them into a list.
   Future<List<BirthdayEntry>> fetchBirthdayEntries() async {
     final entries = await persistence.getAllEntries();
 
@@ -191,6 +213,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     return fetchedEntries;
   }
 
+  /// Starting process to add another birthday entry. Calling WidgetBirthdayInput widget to be displayed.
   Future<void> _addEntry(BuildContext context) async{
     final entry = await Navigator.push(
         context,
@@ -204,6 +227,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     addBirthdayEntry(entry);
   }
 
+  /// Starting process to edit the recently selected birthday entry. Calling WidgetBirthdayInput widget to be displayed.
   Future<void> _editEntry(BuildContext context, BirthdayEntry recentSelected) async{
     final entry = await Navigator.push(
       context,
@@ -217,6 +241,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     editBirthdayEntry(recentSelected, entry);
   }
 
+  /// Validation for birthday entry data fields.
   bool validateBirthdayEntry(BirthdayEntry entry){
     // Name can't be blank.
     if(entry.name.isEmpty){
@@ -229,6 +254,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     return true;
   }
 
+  /// Deleting a birthday entry
   void deleteBirthdayEntry(BirthdayEntry entry){
     setState(() {
       persistence.deleteEntry(entry);
@@ -236,6 +262,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     });
   }
 
+  /// Adding birthday to database and scheduling a notification.
   void addBirthdayEntry(BirthdayEntry entry) {
     if(!validateBirthdayEntry(entry)) return;
 
@@ -249,6 +276,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     });
   }
 
+  /// Updating a birthday entry in database.
   void editBirthdayEntry(BirthdayEntry recentSelected, BirthdayEntry entry){
     if(!validateBirthdayEntry(entry)) return;
 

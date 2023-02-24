@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'Date.dart';
 
+/// Notification manager. Need instance to show or schedule notifications.
 class Notifications{
   Notifications();
 
@@ -10,6 +11,7 @@ class Notifications{
 
   final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
+  /// Setting up notification instance
   Future<void> initNotifications() async {
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
@@ -24,6 +26,7 @@ class Notifications{
     );
   }
 
+  /// Choosing notification parameters. Private function.
   Future<NotificationDetails> notificationDetails() async {
     const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
         'channel_id',
@@ -39,6 +42,7 @@ class Notifications{
     );
   }
 
+  /// Show instant notification.
   void showNotification(int id, String title, String body, String payload) async{
     flutterLocalNotificationsPlugin.show(
       id,
@@ -49,6 +53,7 @@ class Notifications{
     );
   }
 
+  /// Schedule notification.
   void scheduleNotification(int id, String title, String body, DateTime schedule, String payload) async{
     flutterLocalNotificationsPlugin.zonedSchedule(
       id,
@@ -62,10 +67,12 @@ class Notifications{
     );
   }
 
+  /// Delete schedule notification.
   void deleteScheduledNotification(int id) {
     flutterLocalNotificationsPlugin.cancel(id);
   }
 
+  /// Gets called when notification gets clicked on.
   void onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
 

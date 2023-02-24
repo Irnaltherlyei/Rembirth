@@ -1,3 +1,4 @@
+/// Structure holding data for a birthday entry. Needs to be modified when adding for data.
 class BirthdayEntry {
   final String name;
   final String date;

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hello_flutter/Date.dart';
 import 'package:hello_flutter/birthday_entry.dart';
 
+import 'birthday_entry.dart';
+import 'Date.dart';
+
+/// Widget displaying input page to create a new birthday entry.
 class WidgetBirthdayInput extends StatefulWidget {
   const WidgetBirthdayInput({Key? key, this.entry}) : super(key: key);
 
+  /// Birthday entry getting returned.
   final BirthdayEntry? entry;
 
   @override
@@ -13,6 +18,7 @@ class WidgetBirthdayInput extends StatefulWidget {
 
 class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
 
+  /// Selected date and name getting returned after being capsuled in a birthday entry object.
   DateTime selectedDate = Date.now();
   final nameController = TextEditingController();
 
@@ -25,6 +31,7 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
 
   @override
   Widget build(BuildContext context) {
+    /// Design
     return AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: Padding(
@@ -85,6 +92,7 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
     );
   }
 
+  /// DayPicker Widget being called.
   Future<void> _getDay(BuildContext context, DateTime currentDate) async{
     final int result = await Navigator.push(
       context,
@@ -98,6 +106,7 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
     });
   }
 
+  /// MonthPicker Widget being called. When month gets chosen DayPicker gets called automatically.
   Future<void> _getMonth(BuildContext context) async{
     final int result = await Navigator.push(
       context,
@@ -113,6 +122,7 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
     _getDay(context, selectedDate);
   }
 
+  /// YearPicker Widget being called. When year gets chosen MonthPicker gets called automatically.
   Future<void> _getYear(BuildContext context) async{
     final int result = await Navigator.push(
       context,
@@ -129,8 +139,10 @@ class _WidgetBirthdayInputState extends State<WidgetBirthdayInput> {
   }
 }
 
+/// Widget displaying a day picker and returning the chosen day. Matching date and weekday depending on chosen year and month.
 class DayPicker extends StatefulWidget {
 
+  /// Chosen month and year to match date and weekday.
   final int month;
   final int year;
 
@@ -146,6 +158,7 @@ class _DayPicker extends State<DayPicker> {
 
   @override
   Widget build(BuildContext context) {
+    /// Calculating grid offset depending where weekday and date match.
     int firstDayOffset = DateUtils.firstDayOffset(widget.year, widget.month, const DefaultMaterialLocalizations()) - 1;
     int daysPerWeek = DateTime.daysPerWeek;
 
@@ -153,6 +166,7 @@ class _DayPicker extends State<DayPicker> {
       firstDayOffset = daysPerWeek + firstDayOffset;
     }
 
+    /// Design
     return AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: Padding(
@@ -191,6 +205,7 @@ class _DayPicker extends State<DayPicker> {
   }
 }
 
+/// Widget displaying a month picker and returning the chosen month.
 class MonthPicker extends StatefulWidget {
   const MonthPicker({Key? key}) : super(key: key);
 
@@ -217,6 +232,7 @@ class _MonthPickerState extends State<MonthPicker> {
 
   @override
   Widget build(BuildContext context) {
+    /// Design
     return AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: Padding(
@@ -247,6 +263,7 @@ class _MonthPickerState extends State<MonthPicker> {
   }
 }
 
+/// Widget displaying a year picker and returning the chosen year. Years start from initialYear and end at endYear.
 class YearPicker extends StatefulWidget {
 
   final int initialYear;
@@ -261,6 +278,7 @@ class YearPicker extends StatefulWidget {
 class _YearPickerState extends State<YearPicker> {
   @override
   Widget build(BuildContext context) {
+    /// Design
     return AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
       content: SingleChildScrollView(
