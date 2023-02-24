@@ -268,6 +268,7 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   /// Deleting a birthday entry
   void deleteBirthdayEntry(BirthdayEntry entry){
     setState(() {
+      birthdayEntries.remove(entry);
       persistence.deleteEntry(entry);
       notifications.deleteScheduledNotification(entry.hashCode);
     });
