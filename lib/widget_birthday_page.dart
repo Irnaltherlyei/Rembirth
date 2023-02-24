@@ -9,6 +9,7 @@ import 'birthday_entry.dart';
 import 'date.dart';
 import 'notifications.dart';
 import 'persistence.dart';
+import 'debug.dart';
 
 /// Widget displaying the main page of the App
 /// Showing a list of birthday entries
@@ -204,6 +205,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           scheduledTime,
           entry.name
         );
+
+        Debug.log("Rescheduled notification for ${entry.name} : ${Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate())))}");
       }
     }
   }
@@ -268,6 +271,9 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
       persistence.deleteEntry(entry);
       notifications.deleteScheduledNotification(entry.hashCode);
     });
+
+    Debug.log("Deleted entry: ${entry.name}");
+    Debug.log("Removed scheduled notification: ${entry.name}");
   }
 
   /// Adding birthday to database and scheduling a notification.
@@ -288,6 +294,9 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           entry.hashCode.toString()
       );
     });
+
+    Debug.log("Added entry ${entry.name}");
+    Debug.log("Scheduled notification for ${entry.name} : $scheduledTime");
   }
 
   /// Updating a birthday entry in database.
@@ -297,6 +306,8 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
     setState(() {
       persistence.updateEntry(recentSelected, entry);
     });
+
+    Debug.log("Edited entry: ${entry.name}");
   }
 
   /// Event listener to notification calls.
