@@ -295,4 +295,22 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
       persistence.updateEntry(recentSelected, entry);
     });
   }
+
+  /// Event listener to notification calls.
+  void listenToNotifications(){
+    notifications.onNotificationClick.stream.listen(onNotificationListen);
+  }
+
+  void onNotificationListen(String? payload){
+    if (payload != null && payload.isNotEmpty) {
+
+      int entryHash = int.parse(payload);
+      BirthdayEntry notificationEntry = birthdayEntries.firstWhere((element) => element.hashCode == entryHash);
+
+      Navigator.push(
+          context,
+          DialogRoute(builder: (context) => WidgetBirthdayPanel(entry: notificationEntry), context: context)
+      );
+    }
+  }
 }
