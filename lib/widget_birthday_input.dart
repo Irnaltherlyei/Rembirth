@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hello_flutter/Date.dart';
-import 'package:hello_flutter/birthday_entry.dart';
 
 import 'birthday_entry.dart';
 import 'Date.dart';

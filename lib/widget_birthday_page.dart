@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hello_flutter/persistence.dart';
-import 'package:hello_flutter/widget_birthday_input.dart';
 
+import 'widget_birthday_panel.dart';
+import 'widget_birthday_entry.dart';
+import 'widget_birthday_input.dart';
+
+import 'birthday_entry.dart';
 import 'date.dart';
 import 'notifications.dart';
-import 'widget_birthday_entry.dart';
-import 'birthday_entry.dart';
+import 'persistence.dart';
 
 /// Widget displaying the main page of the App
 /// Showing a list of birthday entries
@@ -73,24 +75,23 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
                     if(!future.hasData) {
                       return Container();
                     } else {
-                      List<BirthdayEntry>? list = future.data;
-                      // TODO: Move this to initialization
-                      updateNotifications(list!);
-                      list.sort((a, b) => Date.daysToBirthday(a.getDate()).compareTo(Date.daysToBirthday(b.getDate())));
+                      birthdayEntries = future.data!;
+                      updateNotifications(birthdayEntries);
+                      birthdayEntries.sort((a, b) => Date.daysToBirthday(a.getDate()).compareTo(Date.daysToBirthday(b.getDate())));
                       return ListView.builder(
-                          itemCount: list.length,
+                          itemCount: birthdayEntries.length,
                           itemBuilder: (context, index){
 
                             // Selected entries get indented.
-                            double p = 0.0;
-                            if(selected.contains(list[index])){
-                              p = 32.0;
+                            double padding = 0.0;
+                            if(selected.contains(birthdayEntries[index])){
+                              padding = 32.0;
                             }
 
                             return Padding(
-                              padding: EdgeInsets.only(left: p),
+                              padding: EdgeInsets.only(left: padding),
                               child: WidgetBirthdayEntry(
-                                  entry: list[index],
+                                  entry: birthdayEntries[index],
                                   onLongPress: () {
                                     setState(() {
                                       if(recentSelected == null){
@@ -195,7 +196,11 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
           entry.hashCode,
           "Birthday",
           'Today is ${entry.name}\'s birthday.',
-          Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
+          /// TODO: Disable following line on production release.
+          //Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))),
+          Date.now().add(const Duration(seconds: 5)),
+          entry.name
+        );
       }
     }
   }
@@ -266,13 +271,19 @@ class _WidgetBirthdayPageState extends State<WidgetBirthdayPage>{
   void addBirthdayEntry(BirthdayEntry entry) {
     if(!validateBirthdayEntry(entry)) return;
 
+    //print(DateTime.now().add(const Duration(hours: 0, seconds: 2)));
+
     setState(() {
       persistence.insertEntry(entry);
       notifications.scheduleNotification(
           entry.hashCode,
           "Birthday",
           'Today is ${entry.name}s birthday.',
-          Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
+          /// TODO: Disable following line on production release.
+          //Date.now().add(Duration(days: Date.daysToBirthday(entry.getDate()))));
+          DateTime.now().add(const Duration(hours: 0, seconds: 2)),
+          entry.hashCode.toString()
+      );
     });
   }
 

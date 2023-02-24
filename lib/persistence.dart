@@ -14,7 +14,8 @@ class Persistence{
     database = openDatabase(
         join(await getDatabasesPath(), 'birthday_entry_database.db'),
         onCreate: (db, version) {
-          //sampleData();
+          /// TODO: Disable following line on production release.
+          sampleData();
           return db.execute(
             'CREATE TABLE birthday_entry('
             'name TEXT,'

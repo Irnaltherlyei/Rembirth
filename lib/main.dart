@@ -4,7 +4,7 @@ import 'widget_birthday_page.dart';
 
 /// Main class. App starts from here.
 void main() {
-  runApp(const MyApp());
+  runApp(const Rembirth());
 }
 
 /// Main app framework

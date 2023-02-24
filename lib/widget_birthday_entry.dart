@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'Date.dart';
 import 'birthday_entry.dart';
+import 'Date.dart';
 
 /// Single element representing a birthday entry. Are placed in a list to be displayed on the main page.
 /// Is a widget.
